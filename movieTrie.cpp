@@ -1,16 +1,148 @@
 #include <iostream>
 #include <list>
 #include <map>
+
 using namespace std;
 
-template <class T>
+
+string removeQuotes(string my_str)
+{
+    my_str.erase(remove(my_str.begin(), my_str.end(), '"'), my_str.end());
+    return my_str;
+}
+
+// converts string into integer
+int toInt(string str)
+{
+    return stoi((str == "") ? ("-1") : (str));
+}
+
+// converts string into long
+long toLong(string str)
+{
+    return atol((str == "") ? ("-1") : (str.c_str()));
+}
+
+// converts string into float
+float toFloat(string str)
+{
+    return stof((str == "") ? ("-1") : (str));
+}
+
+
+// breaks down a string into smaller substrings and returns a vector
+vector<string> split(string input, char delimeter)
+{
+     string S, T;  // declare string variables
+    stringstream inputString(input); // X is an object of stringstream that references the S string  
+    vector<string> tokens;
+    // use while loop to check the getline() function condition  
+    while (getline(inputString, T, delimeter)) {  
+        /* X represents to read the string from stringstream, T use for store the token string and, 
+         ' ' whitespace represents to split the string where whitespace is found. */  
+        tokens.push_back(T);
+    }  
+    return tokens;
+}
+
+
+// a class to store the data of a movie
+class Movie
+{
+    public:
+        string movie_title = "";
+        vector<string> genre;
+        int title_year = 0;	
+        float imdb_score =  0;	
+        string director_name = "";
+        int director_facebook_likes = 0;	
+        int num_critic_for_reviews = 0;
+        int duration = 0;
+        string actors[3] = {"", "", ""};
+        int actors_facebook_likes[3] = {0,0,0};
+        int gross = 0;	
+        int num_voted_users = 0;	
+        int cast_total_facebook_likes = 0;	
+        int facenumber_in_poster = 0;
+        vector<string> plot_keywords;
+        string movie_imdb_link = "";	
+        int num_user_for_reviews = 0;
+        string language = "";
+        string country = "";
+        string content_rating = "";
+        double budget = 0;
+        float aspect_ratio = 0;
+        int movie_facebook_likes = 0;
+        string color = "";
+
+    // default constructor for movie
+    Movie()
+    {
+
+    }
+
+    Movie(string movie_title, string genre, string title_year, string imdb_score ,	
+        string director_name, string director_facebook_likes , string num_critic_for_reviews, 
+        string duration, string actor_1, string actors_facebook_like_1, string actor_2, 
+        string actors_facebook_like_2, string actor_3, string actors_facebook_like_3,
+        string gross, string num_voted_users, string cast_total_facebook_likes, 
+        string facenumber_in_poster, string plot_keywords, string movie_imdb_link,
+        string num_user_for_reviews, string language, string country,
+        string content_rating, string budget, string aspect_ratio,
+        string movie_facebook_likes, string color)
+    {
+        this->movie_title = removeQuotes(movie_title);
+        this->genre = split(genre, '|');
+        this->title_year = toInt(title_year);	
+        this->imdb_score =  toFloat(imdb_score);	
+        this->director_name = director_name;
+        this->director_facebook_likes = toInt(director_facebook_likes);	
+        this->num_critic_for_reviews = toInt(num_critic_for_reviews);
+        this->duration = toInt(duration);
+        this->actors[0] = actor_1;
+        this->actors[1] = actor_2;
+        this->actors[2] = actor_3;
+        this->actors_facebook_likes[0] = toInt(actors_facebook_like_1);
+        this->actors_facebook_likes[1] = toInt(actors_facebook_like_2);
+        this->actors_facebook_likes[2] = toInt(actors_facebook_like_3);
+        this->gross = toInt(gross);	
+        this->num_voted_users = toInt(num_voted_users);	
+        this->cast_total_facebook_likes = toInt(cast_total_facebook_likes);	
+        this->facenumber_in_poster = toInt(facenumber_in_poster);
+        this->plot_keywords = split(plot_keywords, '|');
+        this->movie_imdb_link = movie_imdb_link;	
+        this->num_user_for_reviews = toInt(num_user_for_reviews);
+        this->language = language;
+        this->country = country;
+        this->content_rating = content_rating;
+        this->budget = toInt(budget);
+        this->aspect_ratio = toFloat(aspect_ratio);
+        this->movie_facebook_likes = toInt(movie_facebook_likes);
+        this->color = color;
+    }
+
+    void print()
+    {
+        cout<<"\nMovie Title: "<<this->movie_title<<"\n"
+            <<"\tRelease Year: "<<this->title_year<<"\n"
+            <<"\tBudget: "<<this->budget<<"\n"
+            <<"\tRating: "<<this->content_rating<<"\n"
+            <<"\tDuration: "<<this->duration<<"\n"
+            <<"\tDirector: "<<this->director_name<<"\n"
+            <<"\tActors: \n"<<"\t\t1. "<<this->actors[0]<<"\n"
+                          <<"\t\t2. "<<this->actors[1]<<"\n"
+                          <<"\t\t3. "<<this->actors[2]<<"\n"<<endl;
+    }
+};
+
+
 class OptimizedTrie 
 {
     class Node 
     {
         public:
             string identifier;
-            T* data;
+            Movie* data;
             map<char, Node*> children;
     };
 
@@ -26,9 +158,9 @@ class OptimizedTrie
         root->identifier = "";
     }
 
-    void insert(string word, T data)
+    void insert(string word, Movie data)
     {
-        T* dataptr = new T(data); 
+        Movie* dataptr = new Movie(data); 
         int i =0;
         // find common substring split, if found 
         // else if identifier length < word then go to next child 
@@ -127,7 +259,7 @@ class OptimizedTrie
             // if the word at i'th index is last character of word then the word is found
             if (word[word_i] == '\0')
             {
-                cout<<"the data in the "<<word<<" is "<<*temp->data<<endl;
+                temp->data->print();
                 return;
             }
             // if the word at i'th index is not the last character of word
@@ -140,7 +272,7 @@ class OptimizedTrie
             }
             else
                 //if there is a node at ith index then search for the remaining word in the node
-                temp = temp -> children[word[word_i]] -> second;
+                temp = temp -> children[word[word_i]];
         }
     }
 
@@ -203,7 +335,7 @@ class OptimizedTrie
         }
 
         if (node->data != NULL)
-            cout<<*node->data<<endl;
+            node->data->print();
             //    iterating over all value of umap
     
         for (auto itr : node->children)

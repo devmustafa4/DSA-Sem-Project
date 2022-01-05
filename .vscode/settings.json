@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "map": "cpp",
+        "system_error": "cpp",
+        "fstream": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
+}
