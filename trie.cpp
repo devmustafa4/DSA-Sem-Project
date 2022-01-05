@@ -1,172 +1,16 @@
-#include<iostream>
-#include<algorithm>
-#include <vector>
+#include <iostream>
 #include <list>
 #include <map>
-#include <sstream>
-#include <istream>
 using namespace std;
 
-
-string removeQuotes(string my_str)
-{
-    my_str.erase(remove(my_str.begin(), my_str.end(), '"'), my_str.end()); //remove A from string
-    return my_str;
-}
-
-// converts string into integer
-int toInt(string str)
-{
-    return stoi((str == "") ? ("-1") : (str));
-}
-
-// converts string into long
-long toLong(string str)
-{
-    return atol((str == "") ? ("-1") : (str.c_str()));
-}
-
-// converts string into float
-float toFloat(string str)
-{
-    return stof((str == "") ? ("-1") : (str));
-}
-
-
-// breaks down a string into smaller substrings and returns a vector
-vector<string> split(string input, char delimeter)
-{
-     string S, T;  // declare string variables
-    stringstream inputString(input); // X is an object of stringstream that references the S string  
-    vector<string> tokens;
-    // use while loop to check the getline() function condition  
-    while (getline(inputString, T, delimeter)) {  
-        /* X represents to read the string from stringstream, T use for store the token string and, 
-         ' ' whitespace represents to split the string where whitespace is found. */  
-        tokens.push_back(T);
-    }  
-    return tokens;
-}
-
-
-// a class to store the data of a movie
-class Movie
-{
-    public:
-        string movie_title = "";
-        vector<string> genre;
-        long title_year = 0;	
-        long imdb_score =  0.0f;	
-        string director_name = "";
-        long director_facebook_likes = 0;	
-        long num_critic_for_reviews = 0;
-        long duration = 0;
-        string actors[3] = {"", "", ""};
-        long actors_facebook_likes[3] = {0,0,0};
-        long gross = 0;	
-        long num_voted_users = 0;	
-        long cast_total_facebook_likes = 0;	
-        long facenumber_in_poster = 0;
-        vector<string> plot_keywords;
-        string movie_imdb_link = "";	
-        long num_user_for_reviews = 0;
-        string language = "";
-        string country = "";
-        string content_rating = "";
-        long budget = 0;
-        long aspect_ratio = 0;
-        long movie_facebook_likes = 0;
-        string color = "";
-
-    // default constructor for movie
-    Movie()
-    {
-
-    }
-
-    Movie(string movie_title, string genre, string title_year, string imdb_score ,	
-        string director_name, string director_facebook_likes , string num_critic_for_reviews, 
-        string duration, string actor_1, string actors_facebook_like_1, string actor_2, 
-        string actors_facebook_like_2, string actor_3, string actors_facebook_like_3,
-        string gross, string num_voted_users, string cast_total_facebook_likes, 
-        string facenumber_in_poster, string plot_keywords, string movie_imdb_link,
-        string num_user_for_reviews, string language, string country,
-        string content_rating, string budget, string aspect_ratio,
-        string movie_facebook_likes, string color)
-   {
-        this->movie_title = removeQuotes(movie_title);
-        this->genre = split(removeQuotes(genre), '|');
-        this->title_year = toLong(removeQuotes(title_year));	
-        this->imdb_score =  toLong(removeQuotes(imdb_score));	
-        this->director_name = removeQuotes(director_name);
-        this->director_facebook_likes = toLong(removeQuotes(director_facebook_likes));	
-        this->num_critic_for_reviews = toInt(removeQuotes(num_critic_for_reviews));
-        this->duration = toLong(removeQuotes(duration));
-        this->actors[0] = removeQuotes(actor_1);
-        this->actors[1] = removeQuotes(actor_2);
-        this->actors[2] = removeQuotes(actor_3);
-        this->actors_facebook_likes[0] = toLong(removeQuotes(actors_facebook_like_1));
-        this->actors_facebook_likes[1] = toLong(removeQuotes(actors_facebook_like_2));
-        this->actors_facebook_likes[2] = toLong(removeQuotes(actors_facebook_like_3));
-        this->gross = toLong(removeQuotes(gross));	
-        this->num_voted_users = toLong(removeQuotes(num_voted_users));	
-        this->cast_total_facebook_likes = toLong(removeQuotes(cast_total_facebook_likes));	
-        this->facenumber_in_poster = toLong(removeQuotes(facenumber_in_poster));
-        this->plot_keywords = split(removeQuotes(plot_keywords), '|');
-        this->movie_imdb_link = removeQuotes(movie_imdb_link);	
-        this->num_user_for_reviews = toLong(removeQuotes(num_user_for_reviews));
-        this->language = removeQuotes(language);
-        this->country = removeQuotes(country);
-        this->content_rating = removeQuotes(content_rating);
-        this->budget = toLong(removeQuotes(budget));
-        this->aspect_ratio = toLong(removeQuotes(aspect_ratio));
-        this->movie_facebook_likes = toLong(removeQuotes(movie_facebook_likes));
-        this->color = removeQuotes(color);
-    }
-
-    int getYear()
-    {
-        return this->title_year;
-    }
-
-    vector<string> getGenre()
-    {
-        return this->genre;
-    }
-
-    float getRating()
-    {
-        return this->imdb_score;
-    }
-
-    void print()
-    {
-        cout<<"\nMovie Title: "<<this->movie_title<<"\n"
-            <<"\tRelease Year: "<<this->title_year<<"\n"
-            <<"\tBudget: "<<this->budget<<"\n"
-            <<"\tImDB Rating: "<<this->imdb_score<<"\n"
-            <<"\tRating: "<<this->content_rating<<"\n"
-            <<"\tDuration: "<<this->duration<<"\n"
-            <<"\tDirector: "<<this->director_name<<"\n"
-            <<"\tActors: \n"<<"\t\t1. "<<this->actors[0]<<"\n"
-                          <<"\t\t2. "<<this->actors[1]<<"\n"
-                          <<"\t\t3. "<<this->actors[2]<<"\n"
-            <<"\tGenres:"<<endl;
-        for (auto g: genre)
-        {
-            cout<<"\t\t"<<removeQuotes(g);
-        }
-    }
-};
-
-
-class OptimizedMovieTrie 
+template <class T>
+class OptimizedTrie 
 {
     class Node 
     {
         public:
             string identifier;
-            Movie* data;
+            T* data;
             map<char, Node*> children;
     };
 
@@ -174,7 +18,7 @@ class OptimizedMovieTrie
 
     public:
 
-    OptimizedMovieTrie()
+    OptimizedTrie()
     {
         // initialize the root node
         root = new Node();
@@ -182,9 +26,9 @@ class OptimizedMovieTrie
         root->identifier = "";
     }
 
-    void insert(string word, Movie data)
+    void insert(string word, T data)
     {
-        Movie* dataptr = new Movie(data); 
+        T* dataptr = new T(data); 
         int i =0;
         // find common substring split, if found 
         // else if identifier length < word then go to next child 
@@ -283,7 +127,7 @@ class OptimizedMovieTrie
             // if the word at i'th index is last character of word then the word is found
             if (word[word_i] == '\0')
             {
-                temp->data->print();
+                cout<<"the data in the "<<word<<" is "<<*temp->data<<endl;
                 return;
             }
             // if the word at i'th index is not the last character of word
@@ -296,7 +140,7 @@ class OptimizedMovieTrie
             }
             else
                 //if there is a node at ith index then search for the remaining word in the node
-                temp = temp -> children[word[word_i]];
+                temp = temp -> children[word[word_i]] -> second;
         }
     }
 
@@ -359,7 +203,7 @@ class OptimizedMovieTrie
         }
 
         if (node->data != NULL)
-            node->data->print();
+            cout<<*node->data<<endl;
             //    iterating over all value of umap
     
         for (auto itr : node->children)
